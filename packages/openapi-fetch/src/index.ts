@@ -13,7 +13,6 @@ interface ClientOptions extends RequestInit {
 export interface BaseParams {
   params?: { query?: Record<string, unknown> };
 }
-
 // const
 
 export type PathItemObject = { [M in HttpMethod]: OperationObject } & { parameters?: any };
@@ -63,7 +62,13 @@ export default function createClient<Paths extends {}>(clientOptions: ClientOpti
   });
 
   async function coreFetch<P extends keyof Paths, M extends HttpMethod>(url: P, fetchOptions: FetchOptions<M extends keyof Paths[P] ? Paths[P][M] : never>): Promise<FetchResponse<M extends keyof Paths[P] ? Paths[P][M] : unknown>> {
-    const { headers, body: requestBody, params = {}, querySerializer = (q: QuerySerializer<M extends keyof Paths[P] ? Paths[P][M] : never>) => new URLSearchParams(q as any).toString(), ...init } = fetchOptions || {};
+    const {
+      headers,
+      body: requestBody,
+      params = {},
+      querySerializer = (q: QuerySerializer<M extends keyof Paths[P] ? Paths[P][M] : never>) => new URLSearchParams(q as any).toString(),
+      ...init
+    } = fetchOptions || {};
 
     // URL
     let finalURL = `${options.baseUrl ?? ""}${url as string}`;
@@ -80,6 +85,13 @@ export default function createClient<Paths extends {}>(clientOptions: ClientOpti
     for (const [k, v] of headerOverrides.entries()) {
       if (v === undefined || v === null) baseHeaders.delete(k); // allow `undefined` | `null` to erase value
       else baseHeaders.set(k, v);
+    }
+    if ((params as any).header) {
+      for (const [k, v] of Object.entries((params as any).header)) {
+        if (v === undefined || v === null) continue;
+        if (typeof v !== "string") continue;
+        baseHeaders.set(k, v);
+      }
     }
 
     // fetch!

@@ -1,7 +1,7 @@
 {
-  "name": "openapi-fetch",
+  "name": "@wakelet/openapi-fetch",
   "description": "Ultra-fast fetching for TypeScript generated automatically from your OpenAPI schema. Weighs in at 1 kb and has virtually zero runtime. Works with React, Vue, Svelte, or vanilla JS.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": {
     "name": "Drew Powers",
     "email": "drew@pow.rs"
@@ -54,5 +54,9 @@
     "typescript": "^5.0.4",
     "vitest": "^0.31.1",
     "vitest-fetch-mock": "^0.2.2"
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com"
   }
 }
